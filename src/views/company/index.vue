@@ -15,6 +15,7 @@
         </el-form-item>
       </div>
     </el-form>
+    <el-button type="primary" @click="news()">新增</el-button>
     <el-table :data="tableData" v-loading="loading" border style="width: 100%">
       <el-table-column prop="name" label="公司名字">
       </el-table-column>
@@ -27,7 +28,7 @@
       </el-table-column>
       <el-table-column prop="creatDate" label="创建时间">
       </el-table-column>
-      <el-table-column prop="type" label="类型">
+      <el-table-column prop="type" label="分类">
       </el-table-column>
       <el-table-column prop="investmentType" label="分类">
       </el-table-column>
@@ -37,9 +38,105 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+
+    <el-dialog title="新增" :visible.sync="newdialog" width="30%" :before-close="newClose">
+      <el-form ref="newform" :model="newform" label-width="80px">
+        <el-form-item label="公司名称">
+          <el-input v-model="newform.name"></el-input>
+        </el-form-item>
+        <el-form-item label="公司介绍">
+          <el-input v-model="newform.introduction"></el-input>
+        </el-form-item>
+        <el-form-item label="公司about介绍">
+          <el-input v-model="newform.introductions"></el-input>
+        </el-form-item>
+        <el-form-item label="类型">
+          <el-input v-model="newform.type"></el-input>
+        </el-form-item>
+        <el-form-item label="facebook">
+          <el-input v-model="newform.facebook"></el-input>
+        </el-form-item>
+        <el-form-item label="linkedin">
+          <el-input v-model="newform.linkedin"></el-input>
+        </el-form-item>
+        <el-form-item label="financialDisplay">
+          <el-input v-model="newform.financialDisplay"></el-input>
+        </el-form-item>
+        <el-form-item label="Robotics标签">
+          <el-select class="selectClass" v-model="newform.Robotics" clearable placeholder="请选择设备类型">
+            <el-option v-for="item in labels" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Spatialcomputing标签">
+          <el-select class="selectClass" v-model="newform.Spatialcomputing" clearable placeholder="请选择设备类型">
+            <el-option v-for="item in labels" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Generative标签">
+         <el-select class="selectClass" v-model="newform.Generative" clearable placeholder="请选择设备类型">
+           <el-option v-for="item in labels" :key="item.id" :label="item.name" :value="item.id">
+           </el-option>
+         </el-select>
+        </el-form-item>
+        <el-form-item label="是否收藏">
+         <el-select class="selectClass" v-model="newform.collection" clearable placeholder="请选择设备类型">
+           <el-option v-for="item in labels" :key="item.id" :label="item.name" :value="item.id">
+           </el-option>
+         </el-select>
+        </el-form-item>
+        <el-form-item label="分类">
+         <el-select class="selectClass" v-model="newform.investmentType" clearable placeholder="请选择设备类型">
+           <el-option v-for="item in companyType" :key="item.id" :label="item.name" :value="item.id">
+           </el-option>
+         </el-select>
+        </el-form-item>
+        <el-form-item label="选择权重">
+         <el-button type="primary" @click="selectWeight">选择权重</el-button>
+        </el-form-item>
+        <el-form-item label="权重">
+         <el-input v-model="newform.weight"></el-input>
+        </el-form-item>
+        <el-form-item label="创建时间">
+          <el-date-picker
+                v-model="newform.creatDate"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+        </el-form-item>
+        <el-form-item label="上传图片">
+           <el-upload
+             action="#"
+             :http-request="handleFileUpload"
+             list-type="picture-card"
+             :on-preview="handlePictureCardPreview"
+             :on-remove="newClose">
+             <i class="el-icon-plus"></i>
+           </el-upload>
+           <!-- <el-dialog :visible.sync="dialogVisible"></el-dialog> -->
+        </el-form-item>
+        <el-button @click="establishChecked">确定</el-button>
+        <el-button @click="establishClose">取消</el-button>
+      </el-form>
+    </el-dialog>
+    <el-dialog title="选择权重" :visible.sync="selectweight" width="30%" :before-close="selectClose">
       <div class="dialog">
-        <el-tree :data="menuList" show-checkbox default-expand-all node-key="id" ref="tree" highlight-current
+        <el-tree :data="menuList" show-checkbox  node-key="id" ref="trees" highlight-current
+          @check="treeChecks" :props="defaultProps">
+          <div class="custom-tree-node" slot-scope="{ node, data }">
+            <span>{{ data.name }}</span>
+          </div>
+        </el-tree>
+      </div>
+      <el-button @click="selectgetChecked">确定</el-button>
+      <el-button @click="selectClose">取消</el-button>
+    </el-dialog>
+
+
+    <el-dialog title="权重" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+      <div class="dialog">
+        <el-tree :data="menuList" show-checkbox  node-key="id" ref="tree" highlight-current
           @check="treeCheck" :props="defaultProps">
           <div class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ data.name }}</span>
@@ -62,7 +159,9 @@
   import {
     apiRead,
     weightQuery,
-    updateubcompany
+    updateubcompany,
+    file_upload,
+    newcompany
   } from "@/api/weight.js"
   export default {
     name: 'loginLog',
@@ -74,16 +173,46 @@
         loading: false,
         pageCount: 0,
         dialogVisible: false,
+        newdialog:false,
         tableData: [],
         menuList: [],
         my_key: [],
         selectId: [],
+        dialogVisible: false,
+        selectweight:false,
         companyId: "",
+        labels:[{
+            name: "是",
+            id: "1"
+          },
+          {
+            name: "否",
+            id: "0"
+          }
+        ],
+        newform:{
+          name:"",
+          introduction:"",
+          introductions:"",
+          Avatar:"",
+          creatDate:"",
+          type:"",
+          investmentType: "investmentCompany",
+          Robotics:0,
+          Spatialcomputing:0,
+          Generative:0,
+          collection:0,
+          selectId:[],
+          weight:0,
+          financialDisplay:"",
+          facebook:"",
+          linkedin:""
+        },
         form: {
           name: "",
           investmentType: "investmentCompany",
           pages: 1,
-          pageSize: 4,
+          pageSize: 5,
         },
         defaultProps: {
           children: 'children',
@@ -106,7 +235,88 @@
     },
     computed: {},
     methods: {
+      news(){
+        this.newdialog=true
+        weightQuery().then((res) => {
+          this.menuList = res.data
+        })
+      },
+      newClose(){
+        this.newdialog=false
+      },
+      establishChecked(){
+        console.log(this.newform)
+        newcompany(this.newform).then((res)=>{
+          console.log(res)
+        })
+      },
+      establishClose(){
 
+      },
+      selectgetChecked(){
+        this.newform.selectId  = []; // 清空 selectId 数组
+        this.newform.weight  = 0;
+        var checkedNodes = this.$refs.trees.getCheckedNodes();
+        checkedNodes.forEach((node) => {
+          if (!Array.isArray(node.children) || node.children.length === 0) {
+            this.newform.selectId.push(node.id);
+          }
+          const weight = parseFloat(node.weight) || 0; // 使用 parseFloat 转换 weight 并处理无效值
+          this.newform.weight  += weight;
+        });
+
+        this.newform.weight=this.newform.weight.toFixed(2)
+        this.selectweight=false
+      },
+      selectWeight(){
+        this.selectweight=true
+        if(this.newform.selectId.length!=0){
+          this.$refs.trees.setCheckedKeys(this.newform.selectId);
+        }
+      },
+      selectClose(){
+        this.selectweight = false
+        this.$refs.trees.setCheckedKeys([])
+      },
+      handleRemove(file, fileList) {
+         console.log(file, fileList);
+       },
+       handlePictureCardPreview(file) {
+         this.dialogVisible = true;
+       },
+      async handleFileUpload(file) {
+      	var that = this
+      		const fileName=file.file.name
+      	const formData = new FormData()
+      	formData.append('file', file.file)
+      	// 调用后端服务器的接口
+      	file_upload(formData,{
+      			 headers: {
+      			            'Content-Type': 'multipart/form-data' // 让axios知道请求体是multipart/form-data类型
+      			          }
+      		}).then((res) => {
+      			if (res.status == 200) {
+               console.log(res.data.data)
+               this.newform.Avatar=res.data.data
+      					 this.$message({
+      					   message: '上传成功',
+      					   type: 'success'
+      					 })
+      			} else {
+      					this.$message({
+      					  message: '上传失败',
+      					  type: 'error'
+      					})
+      			}
+      		})
+      		.catch(error => {
+      				this.$message({
+      				  message: '上传失败',
+      				  type: 'error'
+      				})
+      		});
+
+      },
       getCheckedNodes() {
         this.selectId = []; // 清空 selectId 数组
         var acc = 0;
@@ -118,6 +328,7 @@
           const weight = parseFloat(node.weight) || 0; // 使用 parseFloat 转换 weight 并处理无效值
           acc += weight;
         });
+        acc=acc.toFixed(2)
         updateubcompany({
           id: this.companyId,
           selectId: this.selectId,
@@ -144,7 +355,26 @@
         this.dialogVisible = false
         this.$refs.tree.setCheckedKeys([])
       },
+      treeChecks(data) {
+        // 假设 data 是被点击或选中的节点的数据对象
+        let currentNode = this.$refs.trees.getNode(data.id); // 获取当前节点
+        let keys = [data]; // 初始化已勾选节点的key值数组
 
+        // 如果当前节点存在且被选中
+        if (currentNode && currentNode.checked) {
+          // 向上遍历父节点，直到根节点
+          let parentNode = currentNode.parent;
+          while (parentNode) {
+            // 设置父节点的 checked 属性为 true，即选中父节点
+            parentNode.checked = true;
+            // 将父节点的 key 添加到 keys 数组中
+            keys.unshift(parentNode.data); // 确保添加的是id
+            // 继续向上遍历
+            parentNode = parentNode.parent;
+          }
+        }
+
+      },
       treeCheck(data) {
         // 假设 data 是被点击或选中的节点的数据对象
         let currentNode = this.$refs.tree.getNode(data.id); // 获取当前节点
@@ -215,5 +445,9 @@
 
   .dialog {
     min-height: 400px;
+  }
+  .fromClass{
+    display: flex;
+    justify-content: space-between;
   }
 </style>

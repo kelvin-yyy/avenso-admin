@@ -2,6 +2,7 @@
   <div class="userRights">
     <el-card class="userleft">
       <el-button type="primary" @click="increase" class="increaseBut">增加主菜单</el-button>
+      <!-- :default-expand-all="true" -->
       <el-tree :data="menuList" node-key="id" :expand-on-click-node="false">
         <div class="custom-tree-node" slot-scope="{ node, data }">
           <span @click="() =>handleNodeClick(data)">{{ data.name }}</span>
@@ -136,7 +137,7 @@
           name: data.name,
           id:data.id
         }
-        if(data.childid){
+        if (data.childid === undefined || data.childid === null) {
           this.childState=true
         }else{
           this.childState=false
@@ -166,6 +167,7 @@
         this.titles = "父菜单:" + data.name
       },
       remove(node, data) {
+
         if ( !Array.isArray(data.children) || data.children.length === 0) {
           this.fullscreenLoading = true;
           // var that
@@ -174,7 +176,8 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            if(!data.childid){
+
+            if (data.childid === undefined || data.childid === null) {
               deleteWeight({id:data.id}).then((res)=>{
                   this.list()
               })
@@ -222,7 +225,7 @@
 
   .userleft {
     width: 38%;
-    height: 700px;
+    min-height: 700px;
   }
 
   .menu {

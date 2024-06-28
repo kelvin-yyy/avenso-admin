@@ -70,10 +70,139 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/about',
+    component: Layout,
+    redirect: '/about',
+    children: [{
+      path: 'about',
+      name: 'About',
+      component: () => import('@/views/about/index'),
+      meta: { title: 'about', icon: 'dashboard' }
+    }]
+  },
 
-
-
-
+ {
+    path: '/Highlights',
+    component: Layout,
+    redirect: '/Highlights',
+    children: [{
+      path: 'Highlights',
+      name: 'highlights',
+      component: () => import('@/views/Highlights/index'),
+      meta: { title: 'Highlights', icon: 'dashboard' }
+    }]
+  },
+ {
+    path: '/Details',
+    component: Layout,
+    redirect: '/Details',
+    children: [{
+      path: 'Details',
+      name: 'details',
+      component: () => import('@/views/Details/index'),
+      meta: { title: 'Details', icon: 'dashboard' }
+    }]
+  },
+  {
+     path: '/featurin',
+     component: Layout,
+     redirect: '/featurin',
+     children: [{
+       path: 'featurin',
+       name: 'Featurin',
+       component: () => import('@/views/featurin/index'),
+       meta: { title: 'featurin', icon: 'dashboard' }
+     }]
+   },
+   {
+      path: '/questions',
+      component: Layout,
+      redirect: '/questions',
+      children: [{
+        path: 'questions',
+        name: 'Questions',
+        component: () => import('@/views/questions/index'),
+        meta: { title: 'questions', icon: 'dashboard' }
+      }]
+    },
+    {
+       path: '/Financials',
+       component: Layout,
+       redirect: '/Financials',
+       children: [{
+         path: 'Financials',
+         name: 'financials',
+         component: () => import('@/views/Financials/index'),
+         meta: { title: 'Financials', icon: 'dashboard' }
+       }]
+     },
+     {
+        path: '/fundingRounds',
+        component: Layout,
+        redirect: '/fundingRounds',
+        children: [{
+          path: 'fundingRounds',
+          name: 'FundingRounds',
+          component: () => import('@/views/fundingRounds/index'),
+          meta: { title: 'fundingRounds', icon: 'dashboard' }
+        }]
+      },
+      {
+         path: '/Investors',
+         component: Layout,
+         redirect: '/Investors',
+         children: [{
+           path: 'Investors',
+           name: 'investors',
+           component: () => import('@/views/Investors/index'),
+           meta: { title: 'Investors', icon: 'dashboard' }
+         }]
+       },
+       {
+          path: '/employee',
+          component: Layout,
+          redirect: '/employee',
+          children: [{
+            path: 'employee',
+            name: 'Employee',
+            component: () => import('@/views/employee/index'),
+            meta: { title: 'employee', icon: 'dashboard' }
+          }]
+        },
+        {
+           path: '/contact',
+           component: Layout,
+           redirect: '/contact',
+           children: [{
+             path: 'contact',
+             name: 'Contact',
+             component: () => import('@/views/contact/index'),
+             meta: { title: 'contact_information', icon: 'dashboard' }
+           }]
+         },
+         {
+            path: '/news',
+            component: Layout,
+            redirect: '/news',
+            children: [{
+              path: 'news',
+              name: 'News',
+              component: () => import('@/views/news/index'),
+              meta: { title: 'news', icon: 'dashboard' }
+            }]
+          },
+          {
+             path: '/Similar',
+             component: Layout,
+             redirect: '/Similar',
+             children: [{
+               path: 'Similar',
+               name: 'similar',
+               component: () => import('@/views/Similar/index'),
+               meta: { title: 'Similar', icon: 'dashboard' }
+             }]
+           },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
